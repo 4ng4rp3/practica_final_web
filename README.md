@@ -8,7 +8,7 @@ This project template has been set up using the **Vue CLI 3** and includes:
 * *Babel*
 * *Source Minification*
 
-## Build Setup ALBANIA GANADORA EUROVISIÓN
+## Build Setup
 
 ``` bash
 # install dependencies
