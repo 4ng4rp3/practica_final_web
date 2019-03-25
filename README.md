@@ -1,6 +1,6 @@
-# vue2-phaser3-webpack4-bootstrap4
+# vue2-phaser3-webpack4
 
-#### Webpack 4 boilerplate that integrates Phaser 3 into a Vue 2 project with bootstrap 4.
+#### Webpack 4 boilerplate that integrates Phaser 3 into a Vue 2 project.
 
 This project template has been set up using the **Vue CLI 3** and includes:
 * *Sass*
@@ -8,7 +8,7 @@ This project template has been set up using the **Vue CLI 3** and includes:
 * *Babel*
 * *Source Minification*
 
-## Build Setup sdasd
+## Build Setup
 
 ``` bash
 # install dependencies
