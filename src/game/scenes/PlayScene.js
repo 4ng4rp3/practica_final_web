@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+import ee from '@/ee'
 
 
 export default class PlayScene extends Scene {
@@ -16,6 +17,10 @@ export default class PlayScene extends Scene {
     bomb.body.onWorldBounds = true; // enable worldbounds collision event
     bomb.setBounce(1);
     bomb.setVelocity(200, 20);
+
+    this.physics.world.on('worldbounds', function(body){
+      ee.emit("colision");
+    },this);
 
   }
 
