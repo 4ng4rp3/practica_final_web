@@ -19,6 +19,7 @@
     "build": "webpack --config webpack.config.prod.js --mode production"
   },
   "dependencies": {
+    "eventemitter3": "^3.1.0",
     "phaser": "^3.16.2",
     "vue": "^2.6.8"
   },
