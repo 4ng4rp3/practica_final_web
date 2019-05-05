@@ -31,6 +31,27 @@
 					}
 				},
 				{
+					"filename": "artefacto.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 114,
+						"h": 110
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 114,
+						"h": 110
+					},
+					"frame": {
+						"x": 63,
+						"y": 1,
+						"w": 114,
+						"h": 110
+					}
+				},
+				{
 					"filename": "mapa.png",
 					"rotated": false,
 					"trimmed": false,
@@ -45,7 +66,7 @@
 						"h": 317
 					},
 					"frame": {
-						"x": 63,
+						"x": 179,
 						"y": 1,
 						"w": 944,
 						"h": 317
@@ -78,6 +99,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:d5d657fb155307dcf9e79f96d548d2b4:f886e1270082b394ea059441feffc7f3:9b4ff79787e23e0dacb235f9ec5c4c7e$"
+		"smartupdate": "$TexturePacker:SmartUpdate:79159cd9b6750691aba00b3b93e66cc5:a43da0a1d50292bcf86aca2139bf3f6b:9b4ff79787e23e0dacb235f9ec5c4c7e$"
 	}
 }
