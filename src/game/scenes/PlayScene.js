@@ -9,7 +9,14 @@ export default class PlayScene extends Scene {
 
   create () {
     console.log("Starting PlayScene ...");
-    let i = this.add.image(400, 300, 'sky');
+    //let i = this.add.image(600, 300, 'sky');
+
+    //Añadir imagen de fondo
+    let i = this.add.image(600, 300, 'background');
+    console.log(i);
+
+    //Añadir fondo del mapa
+    i = this.add.image(600, 220, 'background_map');
     console.log(i);
 
     const bomb = this.physics.add.image(400, 200, 'bomb');
