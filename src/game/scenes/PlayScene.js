@@ -9,9 +9,19 @@ export default class PlayScene extends Scene {
 
   create () {
     console.log("Starting PlayScene ...");
+    var shapes = this.cache.json.get('shapes');
+    this.matter.world.setBounds(0, 0, this.game.config.width, this.game.config.height);
+
+    var ground = this.matter.add.sprite(0, 0, 'sheet', 'mapa.png', {shape: shapes.mapa});
+    //ground.setPosition(0 + ground.centerOfMass.x, 280 + ground.centerOfMass.y);  // position (0,280)
+    ground.setPosition(0 + ground.centerOfMass.x, 280 + ground.centerOfMass.y);  // position (0,280)
+
+    // add some objects
+    this.matter.add.sprite(200, 50, 'sheet', 'ficha1.png', {shape: shapes.ficha1});
+
     //let i = this.add.image(600, 300, 'sky');
 
-    //Añadir imagen de fondo
+    /*//Añadir imagen de fondo
     let i = this.add.image(600, 300, 'background');
     console.log(i);
 
@@ -19,7 +29,21 @@ export default class PlayScene extends Scene {
     i = this.add.image(600, 220, 'background_map');
     console.log(i);
 
-    const bomb = this.physics.add.image(400, 200, 'bomb');
+    //Añadir el mapa
+    i = this.add.image(600, 220, 'map');
+    console.log(i);
+
+    //Añadir los limites del mapa
+    let limites = this.add.image(600, 220, 'map_limits');
+    console.log(i);
+
+    //Añadir la ficha
+    let ficha = this.add.sprite(600, 220, 'test');
+
+    i.setScale(0.4);
+    console.log(i);
+*/
+    /*const bomb = this.physics.add.image(400, 200, 'bomb');
     bomb.setCollideWorldBounds(true);
     bomb.body.onWorldBounds = true; // enable worldbounds collision event
     bomb.setBounce(1);
@@ -27,7 +51,7 @@ export default class PlayScene extends Scene {
 
     this.physics.world.on('worldbounds', function(body){
       ee.emit("colision");
-    },this);
+    },this);*/
 
   }
 

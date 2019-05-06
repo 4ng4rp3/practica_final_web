@@ -10,10 +10,10 @@ function launch() {
         height: 600,
         parent: 'game-container',
         physics: {
-            default: 'arcade',
+            default: 'matter',
             arcade: {
                 gravity: {y: 300},
-                debug: false
+                debug: true
             }
         },
         scene: [BootScene, PlayScene]
