@@ -12,6 +12,7 @@ class player {
 
         this.ficha = this.gameMatter.add.sprite(600, 200, 'sheet', 'ficha2.png', {shape: shapes.ficha2});
         this.ficha.setFixedRotation();
+        this.ficha.setDepth(2);
         //this.ficha.
 
         //fragmentos, teleportadores, artefactos, edulcorantes, imanes magicos,
@@ -33,6 +34,49 @@ class player {
     moverAbajo(boolean){
         if (boolean) this.ficha.setVelocityY(this.velocidad);
         //else this.ficha.setVelocityY(0);
+    }
+
+    añadirColisionArtefactos(artefacto, originalThis){
+        //Funcion que a traves del gameObject del artefacto y el this de la escena crea una colision,
+        //la colision suma 1 al numero de artefactos y destruye el artefacto
+
+        originalThis.matterCollision.addOnCollideStart({
+            objectA: this.ficha,
+            objectB: artefacto,
+            callback: function(eventData) {
+                // Esta funcion sera invocada cuando el jugador colisione con el artefacto
+
+                const { bodyA, bodyB, gameObjectA, gameObjectB, pair } = eventData;
+                // bodyA & bodyB are the Matter bodies of the player and artifact respectively
+                // gameObjectA & gameObjectB are the player and artifact respectively
+                // pair is the raw Matter pair data
+
+                this.artefactos += 1;
+                gameObjectB.destroy();
+            },
+            context: this // Context to apply to the callback function
+        });
+    }
+    añadirColisionCofres(cofre, originalThis){
+        //Funcion que a traves del gameObject del cofre y el this de la escena crea una colision,
+        //la colision genera de forma aleatoria un objeto {fragmento, edulcorante, iman magico}
+
+        originalThis.matterCollision.addOnCollideStart({
+            objectA: this.ficha,
+            objectB: cofre,
+            callback: function(eventData) {
+                // Esta funcion sera invocada cuando el jugador colisione con el artefacto
+
+                const { bodyA, bodyB, gameObjectA, gameObjectB, pair } = eventData;
+                // bodyA & bodyB are the Matter bodies of the player and the chest respectively
+                // gameObjectA & gameObjectB are the player and the chest respectively
+                // pair is the raw Matter pair data
+
+                //Generar uno de los objetos
+                gameObjectB.destroy();
+            },
+            context: this // Context to apply to the callback function
+        });
     }
 
     //GETTERS

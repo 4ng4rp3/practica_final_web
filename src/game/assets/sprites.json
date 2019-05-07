@@ -4,30 +4,156 @@
 			"image": "sprite_sheet.png",
 			"format": "RGBA8888",
 			"size": {
-				"w": 1196,
+				"w": 1889,
 				"h": 918
 			},
 			"scale": 1,
 			"frames": [
 				{
-					"filename": "ficha2.png",
+					"filename": "background.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 60,
-						"h": 60
+						"w": 1194,
+						"h": 597
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 60,
-						"h": 60
+						"w": 1194,
+						"h": 597
 					},
 					"frame": {
 						"x": 1,
 						"y": 1,
-						"w": 60,
-						"h": 60
+						"w": 1194,
+						"h": 597
+					}
+				},
+				{
+					"filename": "escalera.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 188,
+						"h": 207
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 188,
+						"h": 207
+					},
+					"frame": {
+						"x": 1197,
+						"y": 1,
+						"w": 188,
+						"h": 207
+					}
+				},
+				{
+					"filename": "pedres.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 305,
+						"h": 169
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 305,
+						"h": 169
+					},
+					"frame": {
+						"x": 1197,
+						"y": 210,
+						"w": 305,
+						"h": 169
+					}
+				},
+				{
+					"filename": "inventario_fondo.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 254,
+						"h": 114
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 254,
+						"h": 114
+					},
+					"frame": {
+						"x": 1387,
+						"y": 1,
+						"w": 254,
+						"h": 114
+					}
+				},
+				{
+					"filename": "frag_artefacto.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 114,
+						"h": 71
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 114,
+						"h": 71
+					},
+					"frame": {
+						"x": 1387,
+						"y": 117,
+						"w": 114,
+						"h": 71
+					}
+				},
+				{
+					"filename": "cofre_cerrado.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 95,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 95,
+						"h": 50
+					},
+					"frame": {
+						"x": 1503,
+						"y": 117,
+						"w": 95,
+						"h": 50
+					}
+				},
+				{
+					"filename": "tienda.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 197,
+						"h": 174
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 197,
+						"h": 174
+					},
+					"frame": {
+						"x": 1197,
+						"y": 381,
+						"w": 197,
+						"h": 174
 					}
 				},
 				{
@@ -45,10 +171,31 @@
 						"h": 110
 					},
 					"frame": {
-						"x": 63,
-						"y": 1,
+						"x": 1396,
+						"y": 381,
 						"w": 114,
 						"h": 110
+					}
+				},
+				{
+					"filename": "ficha2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 60,
+						"h": 60
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 60,
+						"h": 60
+					},
+					"frame": {
+						"x": 1504,
+						"y": 169,
+						"w": 60,
+						"h": 60
 					}
 				},
 				{
@@ -66,31 +213,31 @@
 						"h": 317
 					},
 					"frame": {
-						"x": 179,
-						"y": 1,
+						"x": 1,
+						"y": 600,
 						"w": 944,
 						"h": 317
 					}
 				},
 				{
-					"filename": "background.png",
+					"filename": "mapa_fondo.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 1194,
-						"h": 597
+						"w": 941,
+						"h": 314
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 1194,
-						"h": 597
+						"w": 941,
+						"h": 314
 					},
 					"frame": {
-						"x": 1,
-						"y": 320,
-						"w": 1194,
-						"h": 597
+						"x": 947,
+						"y": 600,
+						"w": 941,
+						"h": 314
 					}
 				}
 			]
@@ -99,6 +246,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:79159cd9b6750691aba00b3b93e66cc5:a43da0a1d50292bcf86aca2139bf3f6b:9b4ff79787e23e0dacb235f9ec5c4c7e$"
+		"smartupdate": "$TexturePacker:SmartUpdate:85e924c1743077645a39533e9bb6b846:5f0b81c86fed852a2788e12a1bfc2bc4:9b4ff79787e23e0dacb235f9ec5c4c7e$"
 	}
 }

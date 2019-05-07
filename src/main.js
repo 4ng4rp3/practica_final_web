@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import App from '@/App';
-import Contador from '@/Contador';
+//import Contador from '@/Contador';
 
 Vue.config.productionTip = false;
 
@@ -8,5 +8,6 @@ Vue.config.productionTip = false;
 
 new Vue({
     el: "#app",
-    components: { App, Contador }
+    //components: { App, Contador }
+    components: { App }
 });
