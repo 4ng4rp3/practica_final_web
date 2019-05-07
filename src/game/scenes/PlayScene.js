@@ -5,6 +5,8 @@ import ee from '@/ee'
 //CONSTANTES
 const PROBABILIDAD_COFRES = 20;
 const PROBABILIDAD_ARTEFACTOS = 20;
+const MINUTO_PELIGRO = 1;
+const MINUTO_DERRUMBE_TOTAL = 5;
 
 //VARIABLES
 let player1;
@@ -81,7 +83,7 @@ export default class PlayScene extends Scene {
     })
 
     //RELOJ DE LA PANTALLA
-    reloj = this.add.text(1020, 20, '00:00', { font: "60px Arial", fill: "#FF0000", align: "center" });
+    reloj = this.add.text(1020, 20, '00:00', { font: "60px Arial", fill: "#000000", align: "center" });
 
     //SPAWNS A FALSE
     spawns.forEach(function(val,index) {
@@ -128,7 +130,7 @@ export default class PlayScene extends Scene {
   }
 
   actualizarInventario(){
-      
+
   }
 
   actualizarReloj(){
@@ -144,6 +146,9 @@ export default class PlayScene extends Scene {
 
       //Actualizar el reloj
       reloj.setText(minutos + ":" + segundos);
+
+      if(minutos == MINUTO_PELIGRO) reloj.setStyle({ font: "60px Arial", fill: "#FF0000", align: "center" });
+      else if(minuto == MINUTO_DERRUMBE_TOTAL) this.finPartida();
   }
 
   spawnCofres(){
@@ -349,4 +354,8 @@ export default class PlayScene extends Scene {
   getRandomArbitrary(min, max) {
       return Math.trunc(Math.random() * (max - min) + min);
   }
+
+  finPartida(){
+    //Funcion que se da cuando ocurre un derrumbe total o ambos jugadores salen por la escalera
+  };
 }
