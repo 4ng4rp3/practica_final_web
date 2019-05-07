@@ -239,7 +239,7 @@
 	"tienda": {
 		"type": "fromPhysicsEditor",
 		"label": "tienda",
-		"isStatic": false,
+		"isStatic": true,
 		"density": 0.10000000149011612,
 		"restitution": 0,
 		"friction": 0.10000000149011612,
@@ -265,7 +265,7 @@
 	"pedres": {
 		"type": "fromPhysicsEditor",
 		"label": "pedres",
-		"isStatic": false,
+		"isStatic": true,
 		"density": 0.10000000149011612,
 		"restitution": 0,
 		"friction": 0.10000000149011612,

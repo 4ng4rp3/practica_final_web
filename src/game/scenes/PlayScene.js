@@ -1,29 +1,48 @@
 import { Scene } from 'phaser';
 import { player } from '../player'
+import { derrumbe } from '../derrumbe'
+import { time } from '../time'
 import ee from '@/ee'
 
 //CONSTANTES
 const PROBABILIDAD_COFRES = 20;
 const PROBABILIDAD_ARTEFACTOS = 20;
+const PROBABILIDAD_DERRUMBE = 10;
 const MINUTO_PELIGRO = 1;
 const MINUTO_DERRUMBE_TOTAL = 5;
 
 //VARIABLES
 let player1;
 let player2;
-let cursors;
-let wasd;
-let time = 0;
+let player1Controls;
+let player2Controls;
+let objectKeys;
+//let time = 0;
+let tiempo;
 let previousTime_artifact = 0;
 let previousTime_chest = 0;
+let previousTime_derrumbe = 0;
 let reloj;
 let spawns = [[200,300], [300,270], [400,260], [510,320], [600,230], [740,290], [740,120], [640,90], [540,110], [440,120], [340,140], [860,210], [1060,300]]; // [1060,150] = salida, [240,150] = tienda
 let spawnsOcupados = [];
-let tienda = [240,150];
-let salida = [1060,150];
+let posTienda = [240,150];
+let posSalida = [1060,150];
 let artefactos = [];
 let cofres = [];
 let shapes;
+
+//Variables de texto del inventario
+let p1Artefactos;
+let p2Artefactos;
+
+let p1Fragmentos;
+let p2Fragmentos;
+
+let p1Edulcorantes;
+let p2Edulcorantes;
+
+let p1Imanes;
+let p2Imanes;
 
 export default class PlayScene extends Scene {
   constructor () {
@@ -49,34 +68,100 @@ export default class PlayScene extends Scene {
     ground_background.setScale(1.19);
     ground_background.setDepth(0);
 
+
+    //AÑADIR FICHA DEL JUGADOR 1
+    player1 = new player(this.matter, 1, shapes, "Jugador 1");
+
+    //AÑADIR FICHA DEL JUGADOR 1
+    player2 = new player(this.matter, 2, shapes, "Jugador 2");
+
     //AÑADIR FONDOS DEL INVENTARIO
     let inventario_background1 = this.matter.add.sprite(150, 410, 'sheet', 'inventario_fondo.png', {shape: shapes.inventario_fondo});
     inventario_background1.setScale(1.4);
 
     let inventario_background2 = this.matter.add.sprite(700, 410, 'sheet', 'inventario_fondo.png', {shape: shapes.inventario_fondo});
     inventario_background2.setScale(1.4);
-    //ground.setPosition(0 + ground.centerOfMass.x, 280 + ground.centerOfMass.y);  // position (0,280)
-    //ground.setPosition(600, 220);  // position (0,280)
 
-    //AÑADIR FICHA DEL JUGADOR 1
-    player1 = new player(this.matter, 1, shapes);
+    //AÑADIR TIENDA
+    let shop = this.matter.add.sprite(posTienda[0], posTienda[1], 'sheet', 'tienda.png', {shape: shapes.tienda});
+    shop.setScale(0.7);
+    shop.setDepth(2);
+    player1.añadirColisionTienda(shop,this);
+    player2.añadirColisionTienda(shop,this);
 
-    //AÑADIR FICHA DEL JUGADOR 1
-    player2 = new player(this.matter, 2, shapes);
+    //INICIALIZAR INVENTARIO EN LA PANTALLA
+      //Nombres
+      this.add.text(170, 420, player1.getNombre(), { font: "30px Arial", fill: "#000000", align: "center" });
+      this.add.text(720, 420, player2.getNombre(), { font: "30px Arial", fill: "#000000", align: "center" });
+
+      //Artefactos
+      p1Artefactos = this.add.text(835, 465, player2.getArtefactos(), { font: "30px Arial", fill: "#000000", align: "center" });
+      p2Artefactos = this.add.text(280, 465, player1.getArtefactos(), { font: "30px Arial", fill: "#000000", align: "center" });
+
+      this.add.sprite(250, 480, 'sheet', 'artefacto.png').setScale(0.3);
+      this.add.sprite(805, 480, 'sheet', 'artefacto.png').setScale(0.3);
+
+      //Fragmentos
+      p1Fragmentos = this.add.text(830, 515, player2.getFragmentos(), { font: "30px Arial", fill: "#000000", align: "center" });
+      p2Fragmentos = this.add.text(280, 515, player1.getFragmentos(), { font: "30px Arial", fill: "#000000", align: "center" });
+
+      this.add.sprite(250, 530, 'sheet', 'frag_artefacto.png').setScale(0.3);
+      this.add.sprite(805, 530, 'sheet', 'frag_artefacto.png').setScale(0.3);
+
+      //Edulcorantes
+      p1Edulcorantes = this.add.text(980, 465, player2.getEdulcorantes(), { font: "30px Arial", fill: "#000000", align: "center" });
+      p2Edulcorantes = this.add.text(430, 465, player1.getEdulcorantes(), { font: "30px Arial", fill: "#000000", align: "center" });
+
+      this.add.sprite(400, 480, 'sheet', 'artefacto.png').setScale(0.3);
+      this.add.sprite(950, 480, 'sheet', 'artefacto.png').setScale(0.3);
+
+      //Teclas edulcorantes
+      this.add.text(340, 465, 'Q', { font: "30px Arial", fill: "#FF0000", align: "center" });
+      this.add.text(900, 465, '-', { font: "30px Arial", fill: "#FF0000", align: "center" });
+
+      //Imanes
+      p1Imanes = this.add.text(980, 515, player1.getImanes(), { font: "30px Arial", fill: "#000000", align: "center" });
+      p2Imanes = this.add.text(430, 515, player1.getImanes(), { font: "30px Arial", fill: "#000000", align: "center" });
+
+      this.add.sprite(400, 530, 'sheet', 'frag_artefacto.png').setScale(0.3);
+      this.add.sprite(950, 530, 'sheet', 'frag_artefacto.png').setScale(0.3);
+
+      //Teclas edulcorantes
+      this.add.text(340, 515, 'E', { font: "30px Arial", fill: "#FF0000", align: "center" });
+      this.add.text(860, 515, 'Shift', { font: "30px Arial", fill: "#FF0000", align: "center" });
 
     //CONSEGUIR LA INSTANCIAS DEL TECLADO
-    cursors = this.input.keyboard.createCursorKeys();
+    //cursors = this.input.keyboard.createCursorKeys();
 
-    wasd = this.input.keyboard.addKeys({
+    player1Controls = this.input.keyboard.addKeys({
+        'up': Phaser.Input.Keyboard.KeyCodes.UP,
+        'down': Phaser.Input.Keyboard.KeyCodes.DOWN,
+        'left': Phaser.Input.Keyboard.KeyCodes.LEFT,
+        'right': Phaser.Input.Keyboard.KeyCodes.RIGHT,
+        'object1': 189,
+        'object2': Phaser.Input.Keyboard.KeyCodes.SHIFT,
+    });
+
+    player2Controls = this.input.keyboard.addKeys({
         'up': Phaser.Input.Keyboard.KeyCodes.W,
         'down': Phaser.Input.Keyboard.KeyCodes.S,
         'left': Phaser.Input.Keyboard.KeyCodes.A,
-        'right': Phaser.Input.Keyboard.KeyCodes.D
+        'right': Phaser.Input.Keyboard.KeyCodes.D,
+        'object1': Phaser.Input.Keyboard.KeyCodes.Q,
+        'object2': Phaser.Input.Keyboard.KeyCodes.E,
     });
 
+    /*objectKeys = this.input.keyboard.addKeys({
+        'q': Phaser.Input.Keyboard.KeyCodes.Q,
+        'e': Phaser.Input.Keyboard.KeyCodes.E,
+        'left': Phaser.Input.Keyboard.KeyCodes.SHIFT,
+        'right': 189,
+    })*/
+
     //TIMER INTERNO EN SEGUNDOS
+    tiempo = new time();
     var timeline = this.time.addEvent({
-        delay: 1000,
+        delay: 300,
         callback: this.timer,
         callbackScope: this,
         loop: true
@@ -127,18 +212,36 @@ export default class PlayScene extends Scene {
 
       //Actualizar inventario
       this.actualizarInventario();
+
+      //Comprobar si los jugadores tienen el edulcorante activado
+      if(player1.getEdulcoranteActivado()) player1.actualizarEfectoEdulcorante(tiempo.getTime());
+      if(player2.getEdulcoranteActivado()) player2.actualizarEfectoEdulcorante(tiempo.getTime());
   }
 
   actualizarInventario(){
+      //Artefactos
+      p1Artefactos.setText(player1.getArtefactos());
+      p2Artefactos.setText(player2.getArtefactos());
 
+      //Fragmentos
+      p1Fragmentos.setText(player1.getFragmentos());
+      p2Fragmentos.setText(player2.getFragmentos());
+
+      //Edulcorantes
+      p1Edulcorantes.setText(player1.getEdulcorantes());
+      p2Edulcorantes.setText(player2.getEdulcorantes());
+
+      //Imanes
+      p1Imanes.setText(player1.getImanes());
+      p2Imanes.setText(player2.getImanes());
   }
 
   actualizarReloj(){
       //Funcion que calcula los minutos y segundos y despues los actualiza en el reloj de la pantalla
 
       //Calcular los minutos y segundos
-      let minutos = Math.trunc(time / 60);
-      let segundos = Math.trunc(time % 60);
+      let minutos = Math.trunc(tiempo.getTime() / 60);
+      let segundos = Math.trunc(tiempo.getTime() % 60);
 
       //Normalizar a dos digitos
       if(minutos < 10) minutos = "0" + minutos;
@@ -148,7 +251,7 @@ export default class PlayScene extends Scene {
       reloj.setText(minutos + ":" + segundos);
 
       if(minutos == MINUTO_PELIGRO) reloj.setStyle({ font: "60px Arial", fill: "#FF0000", align: "center" });
-      else if(minuto == MINUTO_DERRUMBE_TOTAL) this.finPartida();
+      else if(minutos == MINUTO_DERRUMBE_TOTAL) this.finPartida();
   }
 
   spawnCofres(){
@@ -159,8 +262,8 @@ export default class PlayScene extends Scene {
       let originalThis = this;
 
       //Ha pasado un segundo
-      if(time - previousTime_chest >= 1) {
-          previousTime_chest = time;
+      if(tiempo.getTime() - previousTime_chest >= 1) {
+          previousTime_chest = tiempo.getTime();
           let random = this.getRandomArbitrary(0, 100);
 
           //probabilidad de generar un artefacto en un spawn
@@ -180,8 +283,8 @@ export default class PlayScene extends Scene {
                       cofres.push(cofre);
 
                       //Añadir colisiones
-                      player1.añadirColisionCofres(cofre, this);
-                      player2.añadirColisionCofres(cofre, this);
+                      player1.añadirColisionCofres(cofre, this, random, spawnsOcupados);
+                      player2.añadirColisionCofres(cofre, this, random, spawnsOcupados);
 
                       //Poner res a true para salir del bucle
                       res = true;
@@ -207,8 +310,8 @@ export default class PlayScene extends Scene {
       let originalThis = this;
 
       //Ha pasado un segundo
-      if(time - previousTime_artifact >= 1){
-          previousTime_artifact = time;
+      if(tiempo.getTime() - previousTime_artifact >= 1){
+          previousTime_artifact = tiempo.getTime();
           let random = this.getRandomArbitrary(0,100);
 
           //console.log("random: " + random);
@@ -231,8 +334,8 @@ export default class PlayScene extends Scene {
                       artefactos.push(artefacto);
 
                       //Añadir colisiones
-                      player1.añadirColisionArtefactos(artefacto, this);
-                      player2.añadirColisionArtefactos(artefacto, this);
+                      player1.añadirColisionArtefactos(artefacto, this, random, spawnsOcupados);
+                      player2.añadirColisionArtefactos(artefacto, this, random, spawnsOcupados);
 
                       //Poner res a true para salir del bucle
                       res = true;
@@ -248,21 +351,56 @@ export default class PlayScene extends Scene {
               }
           }
       }
-      /*spawns.forEach(function(val,index) {
-          let artefacto = matter.add.sprite(spawns[index][0], spawns[index][1], 'sheet', 'artefacto.png', {shape: shapes.artefacto});
-          artefacto.setScale(0.5);
-          artefacto.setDepth(0);
-          artefactos.push(artefacto);
-          player1.añadirColisionArtefactos(artefacto, originalThis);
-          player2.añadirColisionArtefactos(artefacto, originalThis);
-      })
-
-       */
-
   }
 
   derrumbeNodos(){
       //Funcion que ira derrumbando nodos aleatoriamente
+      //cada segundo segun {PROBABILIDAD_DERRUMBE}
+
+      let matter = this.matter;
+      let originalThis = this;
+
+      //Ha pasado un segundo
+      if(tiempo.getTime() - previousTime_derrumbe >= 1){
+          previousTime_derrumbe = tiempo.getTime();
+          let random = this.getRandomArbitrary(0, 100);
+
+          //probabilidad de generar un artefacto en un spawn
+          if(random < PROBABILIDAD_DERRUMBE){
+              //Elegir aleatoriamente en donde poner el derrumbe
+
+              random = this.getRandomArbitrary(0,spawns.length);
+              //console.log("Position: " + random);
+              let res = false;
+              let count = 0;
+
+              //While para encontrar una posicion libre
+              while(!res && count < spawns.length){
+                  if (!spawnsOcupados[random]){
+                      //console.log("Hola " + random);
+                      //Generamos un derrumbe en la posicion del spawn[random]
+                      let desprendimiento = new derrumbe(this.matter,shapes, spawns[random]);
+                      //let derrumbe = this.matter.add.sprite(spawns[random][0], spawns[random][1], 'sheet', 'pedres.png', {shape: shapes.pedres});
+
+
+                      //Añadir colisiones
+                      player1.añadirColisionDerrumbe(desprendimiento, this, random, spawnsOcupados, tiempo);
+                      player2.añadirColisionDerrumbe(desprendimiento, this, random, spawnsOcupados, tiempo);
+
+                      //Poner res a true para salir del bucle
+                      res = true;
+
+                      //Marcar posicion como utilizada
+                      spawnsOcupados[random] = true;
+                  }
+                  //Posicion ocupada, generar nueva posicion
+                  else {
+                      random = this.getRandomArbitrary(0,spawns.length);
+                      count++;
+                  }
+              }
+          }
+      }
   }
 
   derrumbeTotal(){
@@ -272,16 +410,16 @@ export default class PlayScene extends Scene {
 
   timer(){
       //Funcion que actualiza el contador de tiempo en segundos
-      time = time + 1;
+      //time = time + 0.3;
+      tiempo.sumar(0.3);
       //console.log("Contador: " + time);
   }
 
   inputsJug1(jugador) {
       //Funcion que se encarga de controlar los inputs del jugador 1
 
-      let input = false;
       //Movimiento a la izquierda
-      if(cursors.left.isDown){
+      if(player1Controls.left.isDown){
           jugador.moverIzquierda(true);
       }
       else {
@@ -289,7 +427,7 @@ export default class PlayScene extends Scene {
       }
 
       //Movimiento a la derecha
-      if(cursors.right.isDown){
+      if(player1Controls.right.isDown){
           jugador.moverDerecha(true);
       }
       else {
@@ -297,7 +435,7 @@ export default class PlayScene extends Scene {
       }
 
       //Movimiento a arriba
-      if(cursors.up.isDown){
+      if(player1Controls.up.isDown){
           jugador.moverArriba(true);
       }
       else {
@@ -305,20 +443,30 @@ export default class PlayScene extends Scene {
       }
 
       //Movimiento a abajo
-      if(cursors.down.isDown){
+      if(player1Controls.down.isDown){
           jugador.moverAbajo(true);
       }
       else {
           jugador.moverAbajo(false);
       }
 
+      //Objeto 1 (Edulcorante)
+      if(player1Controls.object1.isDown){
+          jugador.usarEdulcorante(tiempo.getTime());
+      }
+
+      //Objeto 1 (Iman Magico)
+      if(player1Controls.object2.isDown){
+          jugador.usarIman(tiempo.getTime(), player2);
+      }
+
   }
 
   inputsJug2(jugador) {
       //Funcion que se encarga de controlar los inputs del jugador 2
-      let input = false;
+
       //Movimiento a la izquierda
-      if(wasd.left.isDown){
+      if(player2Controls.left.isDown){
           jugador.moverIzquierda(true);
       }
       else {
@@ -326,7 +474,7 @@ export default class PlayScene extends Scene {
       }
 
        //Movimiento a la derecha
-      if(wasd.right.isDown){
+      if(player2Controls.right.isDown){
           jugador.moverDerecha(true);
       }
       else {
@@ -334,7 +482,7 @@ export default class PlayScene extends Scene {
       }
 
       //Movimiento a arriba
-      if(wasd.up.isDown){
+      if(player2Controls.up.isDown){
           jugador.moverArriba(true);
       }
       else {
@@ -342,11 +490,21 @@ export default class PlayScene extends Scene {
       }
 
       //Movimiento a abajo
-      if(wasd.down.isDown){
+      if(player2Controls.down.isDown){
           jugador.moverAbajo(true);
       }
       else {
           jugador.moverAbajo(false);
+      }
+
+      //Objeto 1 (Edulcorante)
+      if(player2Controls.object1.isDown){
+          jugador.usarEdulcorante(tiempo.getTime());
+      }
+
+      //Objeto 1 (Iman Magico)
+      if(player2Controls.object2.isDown){
+          jugador.usarIman(tiempo.getTime(), player1);
       }
 
   }
