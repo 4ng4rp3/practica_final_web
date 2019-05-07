@@ -14,10 +14,15 @@ export default class PlayScene extends Scene {
 
     var ground = this.matter.add.sprite(0, 0, 'sheet', 'mapa.png', {shape: shapes.mapa});
     //ground.setPosition(0 + ground.centerOfMass.x, 280 + ground.centerOfMass.y);  // position (0,280)
-    ground.setPosition(0 + ground.centerOfMass.x, 280 + ground.centerOfMass.y);  // position (0,280)
-
+    ground.setPosition(600, 220);  // position (0,280)
+    ground.setScale(1.2);
+    //ground.setSize(1.2)
     // add some objects
-    this.matter.add.sprite(200, 50, 'sheet', 'ficha1.png', {shape: shapes.ficha1});
+    var ficha = this.matter.add.sprite(600, 200, 'sheet', 'ficha2.png', {shape: shapes.ficha2});
+    //ficha.setScale(0.2);
+    //ficha.setSize(0.2,0.2);
+    //ficha.setPosition(300, 200);
+
 
     //let i = this.add.image(600, 300, 'sky');
 
@@ -38,11 +43,12 @@ export default class PlayScene extends Scene {
     console.log(i);
 
     //Añadir la ficha
-    let ficha = this.add.sprite(600, 220, 'test');
+    */
+    let ficha2 = this.add.sprite(600, 220, 'test');
 
-    i.setScale(0.4);
-    console.log(i);
-*/
+    ficha2.setScale(0.4);
+    console.log(ficha2);
+
     /*const bomb = this.physics.add.image(400, 200, 'bomb');
     bomb.setCollideWorldBounds(true);
     bomb.body.onWorldBounds = true; // enable worldbounds collision event
