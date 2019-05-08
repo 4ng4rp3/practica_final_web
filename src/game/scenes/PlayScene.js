@@ -2,7 +2,7 @@ import { Scene } from 'phaser';
 import { player } from '../player'
 import { derrumbe } from '../derrumbe'
 import { time } from '../time'
-import ee from '@/ee'
+//import ee from '@/ee'
 
 //CONSTANTES
 const PROBABILIDAD_COFRES = 20;
@@ -10,6 +10,7 @@ const PROBABILIDAD_ARTEFACTOS = 20;
 const PROBABILIDAD_DERRUMBE = 10;
 const MINUTO_PELIGRO = 1;
 const MINUTO_DERRUMBE_TOTAL = 5;
+const PROBABILIDAD_DERRUMBE_TOTAL = 3; //0.3% de 300 segundos (5*60)
 
 //VARIABLES
 let player1;
@@ -22,14 +23,16 @@ let tiempo;
 let previousTime_artifact = 0;
 let previousTime_chest = 0;
 let previousTime_derrumbe = 0;
+let previousTime_derrumbe_total = 0;
 let reloj;
 let spawns = [[200,300], [300,270], [400,260], [510,320], [600,230], [740,290], [740,120], [640,90], [540,110], [440,120], [340,140], [860,210], [1060,300]]; // [1060,150] = salida, [240,150] = tienda
 let spawnsOcupados = [];
 let posTienda = [240,150];
-let posSalida = [1060,150];
+let posSalida = [1060,165];
 let artefactos = [];
 let cofres = [];
 let shapes;
+let estado = "playing";
 
 //Variables de texto del inventario
 let p1Artefactos;
@@ -68,12 +71,23 @@ export default class PlayScene extends Scene {
     ground_background.setScale(1.19);
     ground_background.setDepth(0);
 
+    //TIMER INTERNO EN SEGUNDOS
+    tiempo = new time();
+    var timeline = this.time.addEvent({
+        delay: 300,
+        callback: this.timer,
+        callbackScope: this,
+        loop: true
+    })
+
+    //RELOJ DE LA PANTALLA
+    reloj = this.add.text(1020, 20, '00:00', { font: "60px Arial", fill: "#000000", align: "center" });
 
     //AÑADIR FICHA DEL JUGADOR 1
-    player1 = new player(this.matter, 1, shapes, "Jugador 1");
+    player1 = new player(this.matter, 1, shapes, "Jugador 1", tiempo);
 
     //AÑADIR FICHA DEL JUGADOR 1
-    player2 = new player(this.matter, 2, shapes, "Jugador 2");
+    player2 = new player(this.matter, 2, shapes, "Jugador 2", tiempo);
 
     //AÑADIR FONDOS DEL INVENTARIO
     let inventario_background1 = this.matter.add.sprite(150, 410, 'sheet', 'inventario_fondo.png', {shape: shapes.inventario_fondo});
@@ -89,10 +103,21 @@ export default class PlayScene extends Scene {
     player1.añadirColisionTienda(shop,this);
     player2.añadirColisionTienda(shop,this);
 
+    //AÑADIR ESCALERA
+    let escalera = this.matter.add.sprite(posSalida[0], posSalida[1], 'sheet', 'escalera.png', {shape: shapes.escalera});
+    escalera.setScale(0.6);
+    escalera.setDepth(0);
+    player1.añadirColisionEscalera(escalera,this);
+    player2.añadirColisionEscalera(escalera,this);
+
     //INICIALIZAR INVENTARIO EN LA PANTALLA
       //Nombres
       this.add.text(170, 420, player1.getNombre(), { font: "30px Arial", fill: "#000000", align: "center" });
       this.add.text(720, 420, player2.getNombre(), { font: "30px Arial", fill: "#000000", align: "center" });
+
+      //Iconos
+      this.add.sprite(745, 500, 'sheet', 'verde.png').setScale(0.8);
+      this.add.sprite(195, 500, 'sheet', 'azul.png').setScale(0.8);
 
       //Artefactos
       p1Artefactos = this.add.text(835, 465, player2.getArtefactos(), { font: "30px Arial", fill: "#000000", align: "center" });
@@ -112,8 +137,8 @@ export default class PlayScene extends Scene {
       p1Edulcorantes = this.add.text(980, 465, player2.getEdulcorantes(), { font: "30px Arial", fill: "#000000", align: "center" });
       p2Edulcorantes = this.add.text(430, 465, player1.getEdulcorantes(), { font: "30px Arial", fill: "#000000", align: "center" });
 
-      this.add.sprite(400, 480, 'sheet', 'artefacto.png').setScale(0.3);
-      this.add.sprite(950, 480, 'sheet', 'artefacto.png').setScale(0.3);
+      this.add.sprite(400, 480, 'sheet', 'edulcorante.png').setScale(0.3);
+      this.add.sprite(950, 480, 'sheet', 'edulcorante.png').setScale(0.3);
 
       //Teclas edulcorantes
       this.add.text(340, 465, 'Q', { font: "30px Arial", fill: "#FF0000", align: "center" });
@@ -123,10 +148,10 @@ export default class PlayScene extends Scene {
       p1Imanes = this.add.text(980, 515, player1.getImanes(), { font: "30px Arial", fill: "#000000", align: "center" });
       p2Imanes = this.add.text(430, 515, player1.getImanes(), { font: "30px Arial", fill: "#000000", align: "center" });
 
-      this.add.sprite(400, 530, 'sheet', 'frag_artefacto.png').setScale(0.3);
-      this.add.sprite(950, 530, 'sheet', 'frag_artefacto.png').setScale(0.3);
+      this.add.sprite(400, 530, 'sheet', 'iman.png').setScale(0.3);
+      this.add.sprite(950, 530, 'sheet', 'iman.png').setScale(0.3);
 
-      //Teclas edulcorantes
+      //Teclas imanes
       this.add.text(340, 515, 'E', { font: "30px Arial", fill: "#FF0000", align: "center" });
       this.add.text(860, 515, 'Shift', { font: "30px Arial", fill: "#FF0000", align: "center" });
 
@@ -158,18 +183,6 @@ export default class PlayScene extends Scene {
         'right': 189,
     })*/
 
-    //TIMER INTERNO EN SEGUNDOS
-    tiempo = new time();
-    var timeline = this.time.addEvent({
-        delay: 300,
-        callback: this.timer,
-        callbackScope: this,
-        loop: true
-    })
-
-    //RELOJ DE LA PANTALLA
-    reloj = this.add.text(1020, 20, '00:00', { font: "60px Arial", fill: "#000000", align: "center" });
-
     //SPAWNS A FALSE
     spawns.forEach(function(val,index) {
       spawnsOcupados.push(false);
@@ -190,32 +203,41 @@ export default class PlayScene extends Scene {
 
   update () {
 
-      //Actualizar reloj de la pantalla
-      this.actualizarReloj();
-      //Comprobar si el jugador 1 ha pulsado alguna de sus teclas
-      this.inputsJug1(player1);
+      if(estado == "playing") {
+          //Actualizar reloj de la pantalla
+          this.actualizarReloj();
+          //Comprobar si el jugador 1 ha pulsado alguna de sus teclas
+          this.inputsJug1(player1);
 
-      //Comprobar si el jugador 2 ha pulsado alguna de sus teclas
-      this.inputsJug2(player2);
+          //Comprobar si el jugador 2 ha pulsado alguna de sus teclas
+          this.inputsJug2(player2);
 
-      //Generar artefactos
-      this.spawnArtefactos();
+          //Generar artefactos
+          this.spawnArtefactos();
 
-      //Generar cofres
-      this.spawnCofres();
+          //Generar cofres
+          this.spawnCofres();
 
-      //Derrumbar nodos
-      this.derrumbeNodos();
+          //Derrumbar nodos
+          this.derrumbeNodos();
 
-      //Derrumbe total
-      this.derrumbeTotal();
+          //Derrumbe total
+          this.derrumbeTotal();
 
-      //Actualizar inventario
-      this.actualizarInventario();
+          //Actualizar inventario
+          this.actualizarInventario();
 
-      //Comprobar si los jugadores tienen el edulcorante activado
-      if(player1.getEdulcoranteActivado()) player1.actualizarEfectoEdulcorante(tiempo.getTime());
-      if(player2.getEdulcoranteActivado()) player2.actualizarEfectoEdulcorante(tiempo.getTime());
+          //Comprobar si los jugadores tienen el edulcorante activado
+          if (player1.getEdulcoranteActivado()) player1.actualizarEfectoEdulcorante(tiempo.getTime());
+          if (player2.getEdulcoranteActivado()) player2.actualizarEfectoEdulcorante(tiempo.getTime());
+
+          //Comprobar si los jugadores han salido
+          if(player1.getSalido() && player2.getSalido()) {
+              estado = "ending";
+
+          }
+      }
+      else if(estado == "ending") this.finPartida();
   }
 
   actualizarInventario(){
@@ -404,8 +426,22 @@ export default class PlayScene extends Scene {
   }
 
   derrumbeTotal(){
-      //A partir de 1 minuto el juego puede acabarse repentinamente por un derrumbe total
+      //A partir de 1 minuto el juego puede acabarse repentinamente por un derrumbe total, maximo es 5 minutos
 
+
+      if(tiempo.getTime() - previousTime_derrumbe_total >= 1) {
+          previousTime_derrumbe_total = tiempo.getTime();
+          let minutos = Math.trunc(tiempo.getTime() / 60);
+          //Ha pasado el minuto seguro, a partir de aqui la cueva se puede derrumbar
+          if (minutos >= MINUTO_PELIGRO) {
+              let random = this.getRandomArbitrary(0, ((MINUTO_DERRUMBE_TOTAL * 60) - tiempo.getTime())*10);
+              console.log("Random : " + random);
+              if (random <= PROBABILIDAD_DERRUMBE_TOTAL) {
+                  estado = "ended";
+                  this.finPartida();
+              }
+          }
+      }
   }
 
   timer(){
@@ -515,5 +551,72 @@ export default class PlayScene extends Scene {
 
   finPartida(){
     //Funcion que se da cuando ocurre un derrumbe total o ambos jugadores salen por la escalera
+
+    let jug1;
+    let jug2;
+
+    console.log(player1.getSalido() + " - "+ player2.getSalido())
+    //Los jugadores han salido de la cueva
+    if(player1.getSalido() && player2.getSalido()){
+        //El jugador 1 tiene mas artefactos y ha salido antes
+        if(player1.getArtefactos() > player2.getArtefactos() && player1.getHoraSalida() > player2.getHoraSalida()){
+            jug1 = "GANADOR";
+            jug2 = "PERDEDOR";
+        }
+        //El jugador 2 tiene mas artefactos y ha salido antes
+        else if(player2.getArtefactos() > player1.getArtefactos() && player2.getHoraSalida() > player1.getHoraSalida()){
+            jug1 = "PERDEDOR";
+            jug2 = "GANADOR";
+        }
+        //El jugador 1 tiene menos artefactos pero ha salido antes
+        else if(player1.getArtefactos() < player2.getArtefactos() && player1.getHoraSalida() < player2.getHoraSalida()){
+            jug1 = "GANADOR";
+            jug2 = "PERDEDOR";
+        }
+        //El jugador 2 tiene menos artefactos pero ha salido antes
+        else if(player2.getArtefactos() < player1.getArtefactos() && player2.getHoraSalida() < player1.getHoraSalida()){
+            jug1 = "PERDEDOR";
+            jug2 = "GANADOR";
+        }
+        //mismos artefactos pero jugador 1 sale primero
+        else if(player1.getArtefactos() == player2.getArtefactos() && player1.getHoraSalida() < player2.getHoraSalida()){
+            jug1 = "PERDEDOR";
+            jug2 = "GANADOR";
+        }
+        //mismos artefactos pero jugador 2 sale primero
+        else if(player2.getArtefactos() == player1.getArtefactos() && player2.getHoraSalida() < player1.getHoraSalida()){
+            jug1 = "PERDEDOR";
+            jug2 = "GANADOR";
+        }
+
+        //jugador 1 ha salido pero jugador 2 no
+        else if(player1.getSalido() && !player2.getSalido()){
+            jug1 = "GANADOR";
+            jug2 = "PERDEDOR";
+        }
+        //jugador 2 ha salido pero jugador 1 no
+        else if(player2.getSalido() && !player1.getSalido()){
+            jug1 = "PERDEDOR";
+            jug2 = "GANADOR";
+        }
+
+        //Empate
+        else{
+            jug1 = "PERDEDOR";
+            jug2 = "PERDEDOR";
+        }
+
+    }
+
+    //La cueva se ha derrumbado, ambos pierden
+    else{
+        jug1 = "PERDEDOR";
+        jug2 = "PERDEDOR";
+    }
+
+    this.add.text(320, 420, jug1, { font: "30px Arial", fill: "#FF0000", align: "center" });
+    this.add.text(870, 420, jug2, { font: "30px Arial", fill: "#FF0000", align: "center" });
   };
 }
+
+

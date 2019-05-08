@@ -3,7 +3,6 @@ import BootScene from './scenes/BootScene'
 import PlayScene from './scenes/PlayScene'
 import PhaserMatterCollisionPlugin from "phaser-matter-collision-plugin";
 
-
 function launch() {
     new Phaser.Game({
         type: Phaser.AUTO,
