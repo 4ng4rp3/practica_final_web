@@ -1,6 +1,6 @@
 class time {
     constructor() {
-        this.time = 58;
+        this.time = 0;
     }
     getTime(){
         return this.time;

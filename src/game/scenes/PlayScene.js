@@ -602,8 +602,8 @@ export default class PlayScene extends Scene {
 
         //Empate
         else{
-            jug1 = "PERDEDOR";
-            jug2 = "PERDEDOR";
+            jug1 = "GANADOR";
+            jug2 = "GANADOR";
         }
 
     }
