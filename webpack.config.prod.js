@@ -5,24 +5,21 @@ const webpack = require('webpack');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin/dist/clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-    devServer: {
-        contentBase: path.join(__dirname, 'src/game'),
-        compress: true,
-        port: 9000,
-        proxy: {'/api': 'http://localhost:3000'}
-    },
-    devtool: "source-map",
-    watch: true,
+    mode: 'production',
+
     entry: [
         'bootstrap-loader', path.join(__dirname, './src/main.js')
     ],
     output: {
         path: path.join(__dirname, 'dist'),
-        filename: '[name].bundle.js'
+        filename: '[name].[chunkhash:8].js',
+        chunkFilename: '[name].[chunkhash:8].chunk.js'
     },
     plugins: [
+        new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
             title: 'Phaser + Vue Example',
             template: path.join(__dirname, 'src/index.html'),
