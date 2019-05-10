@@ -4,8 +4,8 @@
 			"image": "sprite_sheet.png",
 			"format": "RGBA8888",
 			"size": {
-				"w": 946,
-				"h": 417
+				"w": 1196,
+				"h": 918
 			},
 			"scale": 1,
 			"frames": [
@@ -31,27 +31,6 @@
 					}
 				},
 				{
-					"filename": "ficha1.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 96,
-						"h": 96
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 96,
-						"h": 96
-					},
-					"frame": {
-						"x": 23,
-						"y": 1,
-						"w": 96,
-						"h": 96
-					}
-				},
-				{
 					"filename": "mapa.png",
 					"rotated": false,
 					"trimmed": false,
@@ -66,10 +45,31 @@
 						"h": 317
 					},
 					"frame": {
-						"x": 1,
-						"y": 99,
+						"x": 23,
+						"y": 1,
 						"w": 944,
 						"h": 317
+					}
+				},
+				{
+					"filename": "background.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 1194,
+						"h": 597
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 1194,
+						"h": 597
+					},
+					"frame": {
+						"x": 1,
+						"y": 320,
+						"w": 1194,
+						"h": 597
 					}
 				}
 			]
@@ -78,6 +78,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:2fcedc2f2828bb0ddb6ecd59544ae03b:ea8601d2bb701496d2ede8152c9cdb2a:9b4ff79787e23e0dacb235f9ec5c4c7e$"
+		"smartupdate": "$TexturePacker:SmartUpdate:1c5de5d8cc30eaea1d91793da9f03c18:71a56a5c0055fa171ffe3471b5ea7227:9b4ff79787e23e0dacb235f9ec5c4c7e$"
 	}
 }
