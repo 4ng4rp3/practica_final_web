@@ -17,7 +17,7 @@ let player1;
 let player2;
 let player1Controls;
 let player2Controls;
-let objectKeys;
+
 //let time = 0;
 let tiempo;
 let previousTime_artifact = 0;
@@ -437,7 +437,7 @@ export default class PlayScene extends Scene {
               let random = this.getRandomArbitrary(0, ((MINUTO_DERRUMBE_TOTAL * 60) - tiempo.getTime())*10);
               console.log("Random : " + random);
               if (random <= PROBABILIDAD_DERRUMBE_TOTAL) {
-                  estado = "ended";
+                  //estado = "ended";
                   this.finPartida();
               }
           }
@@ -555,6 +555,7 @@ export default class PlayScene extends Scene {
     let jug1;
     let jug2;
 
+    estado = "ended";
     console.log(player1.getSalido() + " - "+ player2.getSalido())
     //Los jugadores han salido de la cueva
     if(player1.getSalido() && player2.getSalido()){
