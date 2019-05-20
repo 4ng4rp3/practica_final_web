@@ -8,7 +8,6 @@ const CleanWebpackPlugin = require('clean-webpack-plugin/dist/clean-webpack-plug
 
 module.exports = {
     devServer: {
-        contentBase: path.join(__dirname, 'src/game'),
         compress: true,
         port: 9000,
         proxy: {'/api': 'http://localhost:3000'}
